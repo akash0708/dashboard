@@ -10,8 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 const platforms = [
   {
@@ -37,9 +38,13 @@ const platforms = [
 ];
 
 export default function Home() {
-  const handleSignIn = () => {
-    signIn("github", { callbackUrl: "/dashboard" });
-  };
+  const { data: session } = useSession();
+
+  if (session) {
+    // Redirect to dashboard if user is already signed in
+    redirect("/dashboard/repositories");
+    return null;
+  }
 
   return (
     <div className="w-full h-screen flex flex-row justify-center items-center">

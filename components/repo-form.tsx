@@ -32,22 +32,28 @@ import {
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useRepositoryStore } from "@/store/repoStore";
 
 const formSchema = z.object({
   repositoryName: z.string().min(1, "Repository name is required"),
   technology: z.string().min(1, "Technology is required"),
-  visibility: z.enum(["public", "private"]),
+  visibility: z.enum(["Public", "Private"]),
 });
 
 export function RepositoryForm() {
   const [open, setOpen] = React.useState(false);
   const { toast } = useToast();
+
+  const addRepository = useRepositoryStore((state) => state.addRepository);
+
+  // useEffect to fetch from db and spread them before the default array
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       repositoryName: "",
       technology: "",
-      visibility: "public",
+      visibility: "Public",
     },
   });
 
@@ -61,7 +67,16 @@ export function RepositoryForm() {
         },
         body: JSON.stringify(values),
       });
-      console.log(await response.json());
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error);
+      }
+
+      const data = await response.json();
+      console.log(data);
+      addRepository(data);
+
       toast({
         title: "Success!",
         description: "New repository created.",
@@ -70,6 +85,9 @@ export function RepositoryForm() {
       form.reset();
     } catch (error) {
       console.log(error);
+      form.setError("repositoryName", {
+        message: "Repository name already exists.",
+      });
     }
   }
 
@@ -148,8 +166,8 @@ export function RepositoryForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="public">Public</SelectItem>
-                      <SelectItem value="private">Private</SelectItem>
+                      <SelectItem value="Public">Public</SelectItem>
+                      <SelectItem value="Private">Private</SelectItem>
                     </SelectContent>
                   </Select>
                   {/* <FormDescription className="text-[#175CD3]">

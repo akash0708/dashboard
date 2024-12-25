@@ -6,13 +6,28 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { repositories } from "@/lib/data/repositories";
+import { useRepositoryStore } from "@/store/repoStore";
 import { Database, Plus, RefreshCw, Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function RepositoriesPage() {
+  const repos = useRepositoryStore((state) => state.repositories);
+  const setRepositories = useRepositoryStore((state) => state.setRepositories);
+
+  useEffect(() => {
+    function fetchRepositories() {
+      return fetch("/api/repo").then((response) => response.json());
+    }
+
+    fetchRepositories().then((fetchedRepos) => {
+      console.log("fetchedRepos", fetchedRepos);
+      setRepositories([...fetchedRepos, ...repositories]);
+    });
+  }, []);
+
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredRepositories = repositories.filter((repo) =>
+  const filteredRepositories = repos.filter((repo) =>
     repo.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -23,7 +38,7 @@ export default function RepositoriesPage() {
           <div>
             <h1 className="text-2xl font-bold">Repositories</h1>
             <p className="text-sm text-muted-foreground">
-              {repositories.length} total repositories
+              {repos.length} total repositories
             </p>
           </div>
           <div className="flex flex-col md:flex-row gap-4">
@@ -32,6 +47,7 @@ export default function RepositoriesPage() {
                 variant="outline"
                 size="sm"
                 className="flex-1 md:flex-none"
+                onClick={() => window.location.reload()}
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
                 <span className="inline">Refresh All</span>
@@ -78,7 +94,7 @@ export default function RepositoriesPage() {
             <CardContent className="p-4 pt-0">
               <div className="flex items-center gap-8">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm">{repo.language}</span>
+                  <span className="text-sm">{repo.technology}</span>
                   <div className={`w-2 h-2 rounded-full bg-blue-600`} />
                 </div>
                 <div className="text-sm text-muted-foreground">

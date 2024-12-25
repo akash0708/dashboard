@@ -20,7 +20,7 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import {
   Select,
   SelectContent,
@@ -69,7 +69,7 @@ const mainNavItems: NavItems[] = [
   {
     icon: <Phone className="h-4 w-4" />,
     label: "Support",
-    href: "/support",
+    href: "/dashboard/support",
   },
   {
     icon: <LogOut className="h-4 w-4" />,
@@ -116,12 +116,15 @@ export function MobileNav() {
           <Select>
             <SelectTrigger className="w-full">
               <SelectValue placeholder={githubUsername} />
-              {/* <SelectValue placeholder="UtkarshDhariyaPanwar" /> */}
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">Light</SelectItem>
-              <SelectItem value="dark">Dark</SelectItem>
-              <SelectItem value="system">System</SelectItem>
+              <SelectItem value="UtkarshDhariyaPanwar">
+                UtkarshDhariyaPanwar
+              </SelectItem>
+              <SelectItem value="AmartyaJha">AmartyaJha</SelectItem>
+              <SelectItem value={githubUsername as string}>
+                {githubUsername}
+              </SelectItem>
             </SelectContent>
           </Select>
           <div className="pt-2">

@@ -20,4 +20,6 @@ model Repository {
   name       String @unique
   technology String
   visibility String
+  size       String
+  updatedAt  String
 }

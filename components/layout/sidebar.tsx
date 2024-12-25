@@ -13,7 +13,7 @@ import {
   Settings,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
 import {
   Select,
@@ -64,7 +64,7 @@ const bottomNavItems: SidebarItem[] = [
   {
     icon: <Phone className="h-4 w-4" />,
     label: "Support",
-    href: "#",
+    href: "/dashboard/support",
   },
   {
     icon: <LogOut className="h-4 w-4" />,
@@ -107,12 +107,15 @@ export function Sidebar({ className }: SidebarProps) {
         <Select>
           <SelectTrigger className="w-full mb-3">
             <SelectValue placeholder={githubUsername} />
-            {/* <SelectValue placeholder="UtkarshDhariyaPanwar" /> */}
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
+            <SelectItem value="UtkarshDhariyaPanwar">
+              UtkarshDhariyaPanwar
+            </SelectItem>
+            <SelectItem value="AmartyaJha">AmartyaJha</SelectItem>
+            <SelectItem value={githubUsername as string}>
+              {githubUsername}
+            </SelectItem>
           </SelectContent>
         </Select>
 
@@ -123,7 +126,7 @@ export function Sidebar({ className }: SidebarProps) {
             // className="w-full justify-start"
             className={
               pathname === item.href
-                ? "bg-[#1570EF] text-white w-full justify-start"
+                ? "bg-[#1570EF] hover:bg-[#1570EF]/90 hover:text-white text-white w-full justify-start"
                 : "w-full justify-start"
             }
             asChild
