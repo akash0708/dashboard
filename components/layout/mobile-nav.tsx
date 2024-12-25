@@ -28,32 +28,43 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { signOut, useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
 
-const mainNavItems = [
+interface NavItems {
+  icon: React.ReactNode;
+  label: string;
+  href: string;
+  variant?: "default" | "ghost";
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+}
+
+const mainNavItems: NavItems[] = [
   {
     icon: <Home className="h-4 w-4" />,
     label: "Repositories",
-    href: "/repositories",
+    href: "/dashboard/repositories",
   },
   {
     icon: <CodeXml className="h-4 w-4" />,
     label: "AI Code Review",
-    href: "/code-review",
+    href: "/dashboard/code-review",
   },
   {
     icon: <Cloud className="h-4 w-4" />,
     label: "Cloud Security",
-    href: "/security",
+    href: "/dashboard/security",
   },
   {
     icon: <BookText className="h-4 w-4" />,
     label: "How to Use",
-    href: "/help",
+    href: "/dashboard/help",
   },
   {
-    icon: <Settings className="i-lucide-settings h-4 w-4" />,
+    icon: <Settings className="h-4 w-4" />,
     label: "Settings",
-    href: "/settings",
+    href: "/dashboard/settings",
   },
   {
     icon: <Phone className="h-4 w-4" />,
@@ -64,10 +75,17 @@ const mainNavItems = [
     icon: <LogOut className="h-4 w-4" />,
     label: "Logout",
     href: "#",
+    onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      signOut({ callbackUrl: "/" });
+    },
   },
 ];
 
 export function MobileNav() {
+  const pathname = usePathname();
+  const { data: session } = useSession();
+  const githubUsername = session?.githubUsername;
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -97,7 +115,8 @@ export function MobileNav() {
         <nav className="space-y-1 pt-1 pb-4">
           <Select>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="UtkarshDhariyaPanwar" />
+              <SelectValue placeholder={githubUsername} />
+              {/* <SelectValue placeholder="UtkarshDhariyaPanwar" /> */}
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="light">Light</SelectItem>
@@ -105,16 +124,23 @@ export function MobileNav() {
               <SelectItem value="system">System</SelectItem>
             </SelectContent>
           </Select>
-          {mainNavItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent"
-            >
-              {item.icon}
-              {item.label}
-            </Link>
-          ))}
+          <div className="pt-2">
+            {mainNavItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={clsx(
+                  "flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent",
+                  pathname === item.href && "bg-blue-500 text-white"
+                )}
+                // className="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent"
+                onClick={item.onClick}
+              >
+                {item.icon}
+                {item.label}
+              </Link>
+            ))}
+          </div>
         </nav>
       </SheetContent>
     </Sheet>

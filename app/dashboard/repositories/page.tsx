@@ -1,5 +1,6 @@
 "use client";
 
+import { RepositoryForm } from "@/components/repo-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -35,10 +36,11 @@ export default function RepositoriesPage() {
                 <RefreshCw className="h-4 w-4 mr-2" />
                 <span className="inline">Refresh All</span>
               </Button>
-              <Button size="sm" className="flex-1 md:flex-none">
+              {/* <Button size="sm" className="flex-1 md:flex-none">
                 <Plus className="h-4 w-4 mr-2" />
                 <span className="inline">Add Repository</span>
-              </Button>
+              </Button> */}
+              <RepositoryForm />
             </div>
           </div>
         </div>
@@ -62,7 +64,7 @@ export default function RepositoriesPage() {
                   <h2 className="text-lg font-semibold hover:text-blue-500 cursor-pointer">
                     {repo.name}
                   </h2>
-                  <Badge className="text-[#175CD3] bg-[#EFF8FF] border-[#B2DDFF] text-xs">
+                  <Badge className="text-[#175CD3] bg-[#EFF8FF] border-[#B2DDFF] hover:bg-[#EFF8FF] text-xs">
                     {/* {repo.visibility === "Public" ? (
                       <Globe className="h-3 w-3 mr-1" />
                     ) : (
@@ -70,9 +72,6 @@ export default function RepositoriesPage() {
                     )} */}
                     {repo.visibility}
                   </Badge>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Updated {repo.updatedAt}
                 </div>
               </div>
             </CardHeader>

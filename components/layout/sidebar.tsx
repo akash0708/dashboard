@@ -22,39 +22,41 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { signOut, useSession } from "next-auth/react";
 
 interface SidebarItem {
   icon: React.ReactNode;
   label: string;
   href: string;
   variant?: "default" | "ghost";
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 const mainNavItems: SidebarItem[] = [
   {
     icon: <Home className="h-4 w-4" />,
     label: "Repositories",
-    href: "/repositories",
+    href: "/dashboard/repositories",
   },
   {
     icon: <CodeXml className="h-4 w-4" />,
     label: "AI Code Review",
-    href: "/code-review",
+    href: "/dashboard/code-review",
   },
   {
     icon: <Cloud className="h-4 w-4" />,
     label: "Cloud Security",
-    href: "/security",
+    href: "/dashboard/security",
   },
   {
     icon: <BookTextIcon className="h-4 w-4" />,
     label: "How to Use",
-    href: "/help",
+    href: "/dashboard/help",
   },
   {
     icon: <Settings className="h-4 w-4" />,
     label: "Settings",
-    href: "/settings",
+    href: "/dashboard/settings",
   },
 ];
 
@@ -62,12 +64,16 @@ const bottomNavItems: SidebarItem[] = [
   {
     icon: <Phone className="h-4 w-4" />,
     label: "Support",
-    href: "/support",
+    href: "#",
   },
   {
     icon: <LogOut className="h-4 w-4" />,
     label: "Logout",
-    href: "/logout",
+    href: "#",
+    onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      signOut({ callbackUrl: "/auth/signin" });
+    },
   },
 ];
 
@@ -77,6 +83,8 @@ interface SidebarProps {
 
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const githubUsername = session?.githubUsername;
   return (
     <div
       className={cn(
@@ -98,7 +106,8 @@ export function Sidebar({ className }: SidebarProps) {
       <nav className="space-y-1 flex-1">
         <Select>
           <SelectTrigger className="w-full mb-3">
-            <SelectValue placeholder="UtkarshDhariyaPanwar" />
+            <SelectValue placeholder={githubUsername} />
+            {/* <SelectValue placeholder="UtkarshDhariyaPanwar" /> */}
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="light">Light</SelectItem>
@@ -135,7 +144,7 @@ export function Sidebar({ className }: SidebarProps) {
             className="w-full justify-start"
             asChild
           >
-            <Link href={item.href}>
+            <Link href={item.href} onClick={item.onClick}>
               {item.icon}
               <span className="ml-2">{item.label}</span>
             </Link>
